@@ -17,19 +17,23 @@ def get_test_path():
 
 def get_random_path():
     path = []
-    exit_node = graph_data.graph_data[global_game_data.current_graph_index][len(graph_data.graph_data[global_game_data.current_graph_index])-1][1][0]
+    exit_node = len(graph_data.graph_data[global_game_data.current_graph_index]) - 1
     target = global_game_data.target_node[global_game_data.current_graph_index]
-    next_node= -1
-    curr_node = 0
     target_hit = False
-    while (next_node != exit_node) or (target_hit == False):
+    curr_node = 0
+    while (curr_node != exit_node) or (target_hit == False):
         adjacent_nodes = graph_data.graph_data[global_game_data.current_graph_index][curr_node][1]
-        next_node = random.choice(adjacent_nodes)
-        path.append(next_node)
-        if (next_node == target):
+        curr_node = random.choice(adjacent_nodes)
+        path.append(int(curr_node))
+        if (curr_node == target):
             target_hit = True
-        curr_node = next_node
-    path.append(curr_node)
+    # pre- and postconditions
+    # nodes are connecting
+    # method to validate graph, assert that is validate graph
+    assert nodes_in_path_are_adjacent(path, graph_data.graph_data[global_game_data.current_graph_index]), 'Not all nodes in path are adjacent in graph'
+    assert path[0] in graph_data.graph_data[global_game_data.current_graph_index][0][1], 'Path does not begin at start'
+    assert target in path, 'Target not hit'
+    assert path[len(path) - 1] == exit_node, 'Path does not end at exit node'
     return path
 
 
@@ -43,3 +47,14 @@ def get_bfs_path():
 
 def get_dijkstra_path():
     return [1,2]
+
+def nodes_in_path_are_adjacent(path, graph):
+    for i in range(len(path) - 2):
+        curr_node = path[i]
+        print(curr_node)
+        adjacent_nodes = graph[curr_node][1]
+        next_node = path[i + 1]
+        if next_node not in adjacent_nodes:
+            return False
+    return True
+        

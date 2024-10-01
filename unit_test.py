@@ -1,6 +1,6 @@
 import math
 import unittest
-
+import pathing
 
 class TestPathFinding(unittest.TestCase):
 
@@ -23,6 +23,39 @@ class TestPathFinding(unittest.TestCase):
         self.assertNotEqual(almost_pi, pi)
         self.assertAlmostEqual(first=almost_pi, second=pi, delta=1e-1)
 
+    def test_nodes_in_path_are_adjacent_with_valid_path(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2]],
+        [(0, 2), [1, 4]],
+        [(2, 1), [4]],
+        [(3, 1), [2, 3]]
+        ]
+        path =  [1, 2, 4]
+        pathing.nodes_in_path_are_adjacent(path, graph)
+        self.assertTrue(pathing.nodes_in_path_are_adjacent(path, graph), 'Returns False when graph is valid path.')
+
+    def test_nodes_in_path_are_adjacent_with_invalid_path(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2]],
+        [(0, 2), [1, 4]],
+        [(2, 1), [4]],
+        [(3, 1), [2, 3]]
+        ]
+        path =  [1, 2, 3, 4]
+        pathing.nodes_in_path_are_adjacent(path, graph)
+        self.assertFalse(pathing.nodes_in_path_are_adjacent(path, graph), 'Returns True when graph is invalid path.')
+
+    def test_nodes_in_path_are_adjacent_with_single_node_path(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2]],
+        [(0, 2), [1, 4]]
+        ]
+        path =  [1]
+        pathing.nodes_in_path_are_adjacent(path, graph)
+        self.assertTrue(pathing.nodes_in_path_are_adjacent(path, graph), 'Returns False with valid single node path.')
 
 if __name__ == '__main__':
     unittest.main()
