@@ -47,7 +47,7 @@ class Scoreboard:
             self.player_excess_distance_display.append(
                 (excess_distance_label, player))
             
-            nodes_visited_label = pyglet.text.Label("Nodes Visited:",
+            nodes_visited_label = pyglet.text.Label("Node Visited Count:",
                                                         x=0,
                                                         y=0,
                                                         font_name='Arial',
@@ -117,7 +117,7 @@ class Scoreboard:
             for player_object in global_game_data.player_objects:
                 if player_object.player_config_data == player_configuration_info:
                     num_nodes = player_object.nodes_visited
-                    display_element.text = 'Nodes Visited: ' + str(num_nodes)
+                    display_element.text = 'Node Visited Count: ' + str(num_nodes)
 
 
     def update_scoreboard(self):
