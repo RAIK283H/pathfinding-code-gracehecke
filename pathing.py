@@ -1,14 +1,15 @@
 import graph_data
 import global_game_data
 from numpy import random
+from collections import deque
 
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
     global_game_data.graph_paths.append(get_test_path())
-    global_game_data.graph_paths.append(get_random_path())
-    global_game_data.graph_paths.append(get_dfs_path())
+    # global_game_data.graph_paths.append(get_random_path())
+    # global_game_data.graph_paths.append(get_dfs_path())
     global_game_data.graph_paths.append(get_bfs_path())
-    global_game_data.graph_paths.append(get_dijkstra_path())
+    # global_game_data.graph_paths.append(get_dijkstra_path())
 
 
 def get_test_path():
@@ -47,7 +48,48 @@ def get_dfs_path():
 
 
 def get_bfs_path():
-    return [1,2]
+
+        path = []
+        exit_node = len(graph_data.graph_data[global_game_data.current_graph_index]) - 1
+        print('Exit node: ', exit_node)
+    
+        frontier = deque()
+        frontier.append(0)
+        
+        visited = set()
+        visited.add(0)
+
+        parents = {}
+        parents[0] = None
+
+        while frontier:
+            current = frontier.popleft()
+            print('Current: ', current)
+
+            if current == exit_node:
+                break
+
+            neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+            print('Neighbors: ', neighbors)
+
+            for neighbor in neighbors:
+
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    parents[neighbor] = current
+                    frontier.append(neighbor)
+                    print('Frontier: ', frontier)
+        
+        current = exit_node
+        while current is not None:
+            path.append(current)
+            current = parents[current]
+            print('Path: ', path)
+
+        path.reverse()   
+        print(path)
+
+        return path
 
 
 def get_dijkstra_path():
