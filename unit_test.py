@@ -129,5 +129,9 @@ class TestPathFinding(unittest.TestCase):
         ]
         self.assertFalse(pathing.is_valid_graph(graph), "Should return False when coordinates contain non-numerical value.")
 
+    def test_get_bfs_path(self):
+        pass
+
+
 if __name__ == '__main__':
     unittest.main()

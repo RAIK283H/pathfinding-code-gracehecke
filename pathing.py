@@ -6,10 +6,10 @@ from collections import deque
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
     global_game_data.graph_paths.append(get_test_path())
-    # global_game_data.graph_paths.append(get_random_path())
-    # global_game_data.graph_paths.append(get_dfs_path())
+    global_game_data.graph_paths.append(get_random_path())
+    global_game_data.graph_paths.append(get_dfs_path())
     global_game_data.graph_paths.append(get_bfs_path())
-    # global_game_data.graph_paths.append(get_dijkstra_path())
+    global_game_data.graph_paths.append(get_dijkstra_path())
 
 
 def get_test_path():
@@ -44,50 +44,101 @@ def get_random_path():
 
 
 def get_dfs_path():
-    return [1,2]
+
+        path = []
+        exit_node = len(graph_data.graph_data[global_game_data.current_graph_index]) - 1
+        target = global_game_data.target_node[global_game_data.current_graph_index]
+        checkpoint_nodes = [target, exit_node]
+        start_node = 0
+
+        for checkpoint_node in checkpoint_nodes:
+
+            frontier = []
+            frontier.append(start_node)
+
+            visited = set()
+            visited.add(start_node)
+
+            parents = {}
+            parents[start_node] = None
+
+            while frontier:
+                current = frontier.pop()
+
+                if current == checkpoint_node:
+                    break
+
+                neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+
+                for neighbor in neighbors:
+
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        parents[neighbor] = current
+                        frontier.append(neighbor)
+            
+            current = checkpoint_node
+            run = []
+            while current is not None:
+                run.append(current)
+                current = parents[current]
+
+            run.pop()
+            path.extend(reversed(run))
+            start_node = target
+
+        return path
 
 
 def get_bfs_path():
 
         path = []
         exit_node = len(graph_data.graph_data[global_game_data.current_graph_index]) - 1
-        print('Exit node: ', exit_node)
-    
-        frontier = deque()
-        frontier.append(0)
-        
-        visited = set()
-        visited.add(0)
+        target = global_game_data.target_node[global_game_data.current_graph_index]
+        checkpoint_nodes = [target, exit_node]
+        start_node = 0
 
-        parents = {}
-        parents[0] = None
+        for checkpoint_node in checkpoint_nodes:
 
-        while frontier:
-            current = frontier.popleft()
-            print('Current: ', current)
+            frontier = deque()
+            frontier.append(start_node)
 
-            if current == exit_node:
-                break
+            visited = set()
+            visited.add(start_node)
 
-            neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
-            print('Neighbors: ', neighbors)
+            parents = {}
+            parents[start_node] = None
 
-            for neighbor in neighbors:
+            while frontier:
+                current = frontier.popleft()
 
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    parents[neighbor] = current
-                    frontier.append(neighbor)
-                    print('Frontier: ', frontier)
-        
-        current = exit_node
-        while current is not None:
-            path.append(current)
-            current = parents[current]
-            print('Path: ', path)
+                if current == checkpoint_node:
+                    break
 
-        path.reverse()   
-        print(path)
+                neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+
+                for neighbor in neighbors:
+
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        parents[neighbor] = current
+                        frontier.append(neighbor)
+            
+            current = checkpoint_node
+            run = []
+            while current is not None:
+                run.append(current)
+                current = parents[current]
+
+            run.pop()
+            path.extend(reversed(run))
+            start_node = target
+
+        # post conditions
+        assert nodes_in_path_are_adjacent(path, graph_data.graph_data[global_game_data.current_graph_index]), 'Not all sequential vertices in the path are connected by an edge'
+        assert path[0] in graph_data.graph_data[global_game_data.current_graph_index][0][1], 'Path does not begin at start'
+        assert target in path, 'Target never hit in path'
+        assert path[len(path) - 1] == exit_node, 'Path does not end at exit node'
 
         return path
 

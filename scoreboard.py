@@ -12,6 +12,7 @@ class Scoreboard:
     player_excess_distance_display = []
     player_nodes_visited_display = []
     player_path_display = []
+    winner_display = []
 
     def __init__(self, batch, group):
         self.batch = batch
@@ -64,6 +65,14 @@ class Scoreboard:
             self.player_path_display.append(
                 (path_label, player))
             
+            self.winner_display = pyglet.text.Label('Winner: ',
+                                                  x=0,
+                                                  y=0,
+                                                  font_name='Arial',
+                                                  font_size=self.font_size, batch=batch, group=group, color=player[2][colors.TEXT_INDEX])
+            
+
+            
                 
 
     def update_elements_locations(self):
@@ -84,6 +93,9 @@ class Scoreboard:
         for index, (display_element, player) in enumerate(self.player_nodes_visited_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 6 - self.stat_height * (index * self.number_of_stats)
+        self.winner_display.x = config_data.window_width - self.stat_width
+        self.winner_display.y = config_data.window_height - self.base_height_offset - self.stat_height * 7 - self.stat_height * (index * self.number_of_stats)
+
 
     def update_paths(self):
         for index in range(len(config_data.player_data)):
@@ -119,6 +131,45 @@ class Scoreboard:
                     num_nodes = player_object.nodes_visited
                     display_element.text = 'Node Visited Count: ' + str(num_nodes)
 
+    def calculate_total_distance(self, player_index):
+        path = global_game_data.graph_paths[player_index]
+        total_distance = 0
+
+        for i in range(len(path) - 1):
+            current_node = graph_data.graph_data[global_game_data.current_graph_index][path[i]][0]
+            next_node = graph_data.graph_data[global_game_data.current_graph_index][path[i + 1]][0]
+                                                                                            
+            distance = math.sqrt(math.pow(current_node[0] - next_node[0], 2) + math.pow(current_node[1] - next_node[1], 2))
+            total_distance += distance
+
+        return total_distance
+    
+     #self.distance_traveled = math.sqrt(math.pow(last_absolute_x-self.absolute_x, 2) + math.pow(last_absolute_y-self.absolute_y, 2))
+
+    def update_winner(self):
+        player_total_distances = {}
+
+        for player_object in global_game_data.player_objects:
+            if global_game_data.target_node[player_object.player_index] in global_game_data.graph_paths[player_object.player_index]:
+                total_distance = self.calculate_total_distance(player_object.player_index)
+                print(player_object)
+                print(player_object.player_index)
+                if total_distance not in player_total_distances:
+                    player_total_distances[total_distance] = []
+                player_total_distances[total_distance].append(player_object)
+
+        min_distance = min(player_total_distances.keys())
+        winner_objects = player_total_distances[min_distance]
+        print(player_total_distances.keys())
+        print([config_data.player_data[winner.player_index][0] for winner in winner_objects])
+
+        if len(winner_objects) > 1:
+            winner_names = ', '.join([config_data.player_data[winner.player_index][0] for winner in winner_objects])
+            self.winner_display.text = 'Tie: ' + winner_names
+        else:
+            # Only one player is the winner
+            winner_name = config_data.player_data[winner_objects[0].player_index][0]
+            self.winner_display.text = 'Winner: ' + winner_name
 
     def update_scoreboard(self):
         self.update_elements_locations()
@@ -126,3 +177,5 @@ class Scoreboard:
         self.update_distance_to_exit()
         self.update_distance_traveled()
         self.update_nodes_visited()
+        self.update_winner()
+
