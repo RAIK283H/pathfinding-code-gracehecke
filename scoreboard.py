@@ -144,19 +144,17 @@ class Scoreboard:
 
         return total_distance
     
-     #self.distance_traveled = math.sqrt(math.pow(last_absolute_x-self.absolute_x, 2) + math.pow(last_absolute_y-self.absolute_y, 2))
 
     def update_winner(self):
         player_total_distances = {}
 
         for player_object in global_game_data.player_objects:
-            if global_game_data.target_node[player_object.player_index] in global_game_data.graph_paths[player_object.player_index]:
-                total_distance = self.calculate_total_distance(player_object.player_index)
-                print(player_object)
-                print(player_object.player_index)
-                if total_distance not in player_total_distances:
-                    player_total_distances[total_distance] = []
-                player_total_distances[total_distance].append(player_object)
+            total_distance = self.calculate_total_distance(player_object.player_index)
+            if total_distance not in player_total_distances:
+                player_total_distances[total_distance] = []
+            player_total_distances[total_distance].append(player_object)
+            if (player_object.player_index == 0) and (global_game_data.target_node[player_object.player_index] not in global_game_data.graph_paths[player_object.player_index]):
+                player_total_distances[total_distance].remove(player_object)
 
         min_distance = min(player_total_distances.keys())
         winner_objects = player_total_distances[min_distance]
