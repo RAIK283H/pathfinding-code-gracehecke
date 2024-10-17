@@ -1,6 +1,8 @@
 import math
 import unittest
 import pathing
+import global_game_data
+import graph_data
 
 class TestPathFinding(unittest.TestCase):
 
@@ -129,8 +131,36 @@ class TestPathFinding(unittest.TestCase):
         ]
         self.assertFalse(pathing.is_valid_graph(graph), "Should return False when coordinates contain non-numerical value.")
 
-    def test_get_bfs_path(self):
-        pass
+    # def test_get_bfs_path(self):
+    #     graph_data.graph_data = [    [
+    #     [(0, 0), [1, 4]],
+    #     [(0, 100), [0, 2, 5]],
+    #     [(0, 200), [1, 3, 6]],
+    #     [(0, 300), [2, 7]],
+    #     [(100, 0), [5, 0, 8]],
+    #     [(100, 100), [4, 6, 1, 9]],
+    #     [(100, 200), [5, 7, 2, 10]],
+    #     [(100, 300), [6, 3, 11]],
+    #     [(200, 0), [9, 4, 12]],
+    #     [(200, 100), [8, 10, 5, 13]],
+    #     [(200, 200), [9, 11, 6, 14]],
+    #     [(200, 300), [10, 7, 15]],
+    #     [(300, 0), [13, 8]],
+    #     [(300, 100), [12, 14, 9]],
+    #     [(300, 200), [13, 15, 10]],
+    #     [(300, 300), [14,11]],
+    # ]]
+    #     global_game_data.target_node= [1]
+
+    #     path = pathing.get_bfs_path()
+    #     print(path)
+
+    #     pass
+
+
+#index
+#target nodes
+
 
 
 if __name__ == '__main__':

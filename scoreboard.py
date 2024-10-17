@@ -150,24 +150,22 @@ class Scoreboard:
 
         for player_object in global_game_data.player_objects:
             total_distance = self.calculate_total_distance(player_object.player_index)
-            if total_distance not in player_total_distances:
-                player_total_distances[total_distance] = []
-            player_total_distances[total_distance].append(player_object)
+            player_total_distances[total_distance] = player_object
             if (player_object.player_index == 0) and (global_game_data.target_node[player_object.player_index] not in global_game_data.graph_paths[player_object.player_index]):
-                player_total_distances[total_distance].remove(player_object)
+                player_total_distances.pop(total_distance)
 
         min_distance = min(player_total_distances.keys())
-        winner_objects = player_total_distances[min_distance]
-        print(player_total_distances.keys())
-        print([config_data.player_data[winner.player_index][0] for winner in winner_objects])
+        winner = player_total_distances[min_distance]
+        winner_name = config_data.player_data[winner.player_index][0]
+        self.winner_display.text = 'Winner: ' + winner_name
 
-        if len(winner_objects) > 1:
-            winner_names = ', '.join([config_data.player_data[winner.player_index][0] for winner in winner_objects])
-            self.winner_display.text = 'Tie: ' + winner_names
-        else:
-            # Only one player is the winner
-            winner_name = config_data.player_data[winner_objects[0].player_index][0]
-            self.winner_display.text = 'Winner: ' + winner_name
+        # if len(winner_objects) > 1:
+        #     winner_names = ', '.join([config_data.player_data[winner.player_index][0] for winner in winner_objects])
+        #     self.winner_display.text = 'Tie: ' + winner_names
+        # else:
+        #     # Only one player is the winner
+        #     winner_name = config_data.player_data[winner_objects[0].player_index][0]
+        #     self.winner_display.text = 'Winner: ' + winner_name
 
     def update_scoreboard(self):
         self.update_elements_locations()
