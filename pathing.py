@@ -89,7 +89,6 @@ def get_dfs_path():
 
         return path
 
-
 def get_bfs_path():
 
         path = []

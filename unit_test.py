@@ -131,37 +131,173 @@ class TestPathFinding(unittest.TestCase):
         ]
         self.assertFalse(pathing.is_valid_graph(graph), "Should return False when coordinates contain non-numerical value.")
 
-    # def test_get_bfs_path(self):
-    #     graph_data.graph_data = [    [
-    #     [(0, 0), [1, 4]],
-    #     [(0, 100), [0, 2, 5]],
-    #     [(0, 200), [1, 3, 6]],
-    #     [(0, 300), [2, 7]],
-    #     [(100, 0), [5, 0, 8]],
-    #     [(100, 100), [4, 6, 1, 9]],
-    #     [(100, 200), [5, 7, 2, 10]],
-    #     [(100, 300), [6, 3, 11]],
-    #     [(200, 0), [9, 4, 12]],
-    #     [(200, 100), [8, 10, 5, 13]],
-    #     [(200, 200), [9, 11, 6, 14]],
-    #     [(200, 300), [10, 7, 15]],
-    #     [(300, 0), [13, 8]],
-    #     [(300, 100), [12, 14, 9]],
-    #     [(300, 200), [13, 15, 10]],
-    #     [(300, 300), [14,11]],
-    # ]]
-    #     global_game_data.target_node= [1]
+    def test_get_bfs_path_with_linear_path(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_bfs_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path), "Incorrect BFS output with linear path"
 
-    #     path = pathing.get_bfs_path()
-    #     print(path)
+    def test_get_dfs_path_with_linear_path(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_dfs_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path), "Incorrect DFS output with linear path"
 
-    #     pass
+    def test_bfs_with_cycle(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1]],
+            [(50, -200), [0, 2]],
+            [(50, -300), [1, 3]],
+            [(200, -500), [2, 0]]
+        ]]
+        global_game_data.target_node = [1]
+        actual_path = pathing.get_bfs_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path, "Incorrect BFS output with cyclical path")
 
+    def test_dfs_with_cycle(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1]],
+            [(50, -200), [0, 2]],
+            [(50, -300), [1, 3]],
+            [(200, -500), [2, 0]]
+        ]]
+        global_game_data.target_node = [1]
+        actual_path = pathing.get_dfs_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path, "Incorrect DFS output with cyclical path")
 
-#index
-#target nodes
+    def test_bfs_with_multiple_branches(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1, 2]],     
+            [(50, -200), [0, 3, 4]],
+            [(50, -300), [0, 5, 6]], 
+            [(200, -400), [1]],   
+            [(250, -400), [1, 7]],  
+            [(300, -400), [2]],   
+            [(350, -400), [2, 7]],   
+            [(400, -500), [4, 6]]     
+        ]]
+        global_game_data.target_node = [3]  
+        actual_path = pathing.get_bfs_path()
+        expected_path = [1, 3, 1, 4, 7]
+        self.assertEqual(actual_path, expected_path, "BFS failed with a path containing multiple branches")
 
+    def test_dfs_with_multiple_branches(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1, 2]],     
+            [(50, -200), [0, 3, 4]],
+            [(50, -300), [0, 5, 6]], 
+            [(200, -400), [1]],   
+            [(250, -400), [1, 7]],  
+            [(300, -400), [2]],   
+            [(350, -400), [2, 7]],   
+            [(400, -500), [4, 6]]     
+        ]]
+        global_game_data.target_node = [3]  
+        actual_path = pathing.get_dfs_path()
+        expected_path = [1, 3, 1, 4, 7]
+        self.assertEqual(actual_path, expected_path, "DFS failed with a path containing multiple branches")
 
+    def test_get_bfs_path_with_large_graph(self):
+        graph_data.graph_data =  [[
+            [(900, 0), [21, 22]],
+            [(0, 300), [7, 19, 20]],
+            [(100, 400), [9, 10, 20]],
+            [(200, 0), [6, 8, 11, 22]],
+            [(200, 200), [6, 7, 11, 12]],
+            [(200, 500), [10, 21]],
+            [(300, 100), [3, 4, 11, 20]],
+            [(300, 300), [1, 4, 9, 12, 20]],
+            [(400, 0), [3, 11, 22]],
+            [(400, 300), [2, 7, 12, 13, 15]],
+            [(400, 500), [2, 5, 13, 14, 15]],
+            [(400, 100), [3, 4, 6, 8, 12, 16, 17]],
+            [(400, 300), [4, 7, 9, 11, 15, 17]],
+            [(400, 400), [9, 10, 15]],
+            [(500, 500), [10, 18, 15]],
+            [(600, 400), [9, 10, 12, 13, 14]],
+            [(600, 0), [11, 17]],
+            [(600, 200), [11, 12, 16, 18]],
+            [(700, 400), [14, 17]],
+            [(0, 500), [1, 8, 21]],
+            [(0, 200), [1, 2, 6, 7, 22]],
+            [(400, 700), [5, 19, 0]],
+            [(0, 0), [0, 3, 20]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_bfs_path()
+        expected_path = [21, 19, 1, 20, 22]
+        self.assertEqual(actual_path, expected_path), "Incorrect BFS output with large graph"
+
+    def test_get_dfs_path_with_large_graph(self):
+        graph_data.graph_data =  [[
+            [(900, 0), [21, 22]],
+            [(0, 300), [7, 19, 20]],
+            [(100, 400), [9, 10, 20]],
+            [(200, 0), [6, 8, 11, 22]],
+            [(200, 200), [6, 7, 11, 12]],
+            [(200, 500), [10, 21]],
+            [(300, 100), [3, 4, 11, 20]],
+            [(300, 300), [1, 4, 9, 12, 20]],
+            [(400, 0), [3, 11, 22]],
+            [(400, 300), [2, 7, 12, 13, 15]],
+            [(400, 500), [2, 5, 13, 14, 15]],
+            [(400, 100), [3, 4, 6, 8, 12, 16, 17]],
+            [(400, 300), [4, 7, 9, 11, 15, 17]],
+            [(400, 400), [9, 10, 15]],
+            [(500, 500), [10, 18, 15]],
+            [(600, 400), [9, 10, 12, 13, 14]],
+            [(600, 0), [11, 17]],
+            [(600, 200), [11, 12, 16, 18]],
+            [(700, 400), [14, 17]],
+            [(0, 500), [1, 8, 21]],
+            [(0, 200), [1, 2, 6, 7, 22]],
+            [(400, 700), [5, 19, 0]],
+            [(0, 0), [0, 3, 20]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_dfs_path()
+        expected_path = [22, 20, 1, 20, 22]
+        self.assertEqual(actual_path, expected_path), "Incorrect DFS output with large graph"
+
+    def test_get_bfs_path_when_target_is_end_node(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2, 4]],
+        [(200, 500), [3]]
+        ]]
+        global_game_data.target_node= [4]
+        actual_path = pathing.get_bfs_path()
+        expected_path = [1, 2, 3, 4]
+        self.assertEqual(actual_path, expected_path), "Incorrect BFS output with target as last node"
+
+    def test_get_dfs_path_when_target_is_end_node(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2, 4]],
+        [(200, 500), [3]]
+        ]]
+        global_game_data.target_node= [4]
+        actual_path = pathing.get_dfs_path()
+        expected_path = [1, 2, 3, 4]
+        self.assertEqual(actual_path, expected_path), "Incorrect BFS output with target as last node"
 
 if __name__ == '__main__':
     unittest.main()
