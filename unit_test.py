@@ -3,6 +3,7 @@ import unittest
 import pathing
 import global_game_data
 import graph_data
+import scoreboard
 
 class TestPathFinding(unittest.TestCase):
 
@@ -298,6 +299,18 @@ class TestPathFinding(unittest.TestCase):
         actual_path = pathing.get_dfs_path()
         expected_path = [1, 2, 3, 4]
         self.assertEqual(actual_path, expected_path), "Incorrect BFS output with target as last node"
+
+    # def test_calculate_total_distance_with_two_nodes(self):
+    #     player_index = 0
+    #     graph_data.graph_data = [[
+    #     [(20, 20), [1]],
+    #     [(50, 100), [0, 2]],
+    #     ]]
+    #     global_game_data.graph_paths = [[0, 1]]
+    #     actual_distance = scoreboard.Scoreboard.calculate_total_distance(self, player_index)
+    #     expected_distance =  85.440037453175
+    #     self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with two nodes"
+
 
 if __name__ == '__main__':
     unittest.main()
