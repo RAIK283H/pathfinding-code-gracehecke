@@ -300,16 +300,44 @@ class TestPathFinding(unittest.TestCase):
         expected_path = [1, 2, 3, 4]
         self.assertEqual(actual_path, expected_path), "Incorrect BFS output with target as last node"
 
-    # def test_calculate_total_distance_with_two_nodes(self):
-    #     player_index = 0
-    #     graph_data.graph_data = [[
-    #     [(20, 20), [1]],
-    #     [(50, 100), [0, 2]],
-    #     ]]
-    #     global_game_data.graph_paths = [[0, 1]]
-    #     actual_distance = scoreboard.Scoreboard.calculate_total_distance(self, player_index)
-    #     expected_distance =  85.440037453175
-    #     self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with two nodes"
+    def test_calculate_total_distance_with_two_nodes(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(20, 20), [1]],
+        [(50, 100), [0, 2]],
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(scoreboard.Scoreboard.calculate_total_distance(self, player_index), 10)
+        expected_distance =  85.4400374532
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with two nodes"
+
+    def test_calculate_total_distance_with_multiple_nodes(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, 200), [0, 2]],
+        [(50, 300), [1, 3]],
+        [(200, 500), [2, 4]],
+        [(200, 500), [3]]
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(scoreboard.Scoreboard.calculate_total_distance(self, player_index), 10)
+        expected_distance =  206.1552812809
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with more than two nodes"
+
+    def test_calculate_total_distance_with_negative_coordinates(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -10), [0, 2]],
+        [(50, 30), [1, 3]],
+        [(-20, 50), [2, 4]],
+        [(20, -50), [3]]
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(scoreboard.Scoreboard.calculate_total_distance(self, player_index), 10)
+        expected_distance =  50.9901951359
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with more than two nodes"
 
 
 if __name__ == '__main__':
