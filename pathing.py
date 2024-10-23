@@ -87,6 +87,12 @@ def get_dfs_path():
             path.extend(reversed(run))
             start_node = target
 
+        # post conditions
+        assert nodes_in_path_are_adjacent(path, graph_data.graph_data[global_game_data.current_graph_index]), 'Not all sequential vertices in the path are connected by an edge'
+        assert path[0] in graph_data.graph_data[global_game_data.current_graph_index][0][1], 'Path does not begin at start'
+        assert target in path, 'Target never hit in path'
+        assert path[len(path) - 1] == exit_node, 'Path does not end at exit node'
+
         return path
 
 def get_bfs_path():

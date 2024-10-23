@@ -337,7 +337,7 @@ class TestPathFinding(unittest.TestCase):
         global_game_data.graph_paths = [[0, 1]]
         actual_distance = round(scoreboard.Scoreboard.calculate_total_distance(self, player_index), 10)
         expected_distance =  50.9901951359
-        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with more than two nodes"
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with negative coordinates"
 
 
 if __name__ == '__main__':
