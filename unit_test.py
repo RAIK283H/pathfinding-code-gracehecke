@@ -298,7 +298,7 @@ class TestPathFinding(unittest.TestCase):
         global_game_data.target_node= [4]
         actual_path = pathing.get_dfs_path()
         expected_path = [1, 2, 3, 4]
-        self.assertEqual(actual_path, expected_path), "Incorrect BFS output with target as last node"
+        self.assertEqual(actual_path, expected_path), "Incorrect DFS output with target as last node"
 
     def test_calculate_total_distance_with_two_nodes(self):
         player_index = 0
