@@ -1,3 +1,4 @@
+import graph_data
 
 def get_permutations(graph):
     all_permutations = []
@@ -52,7 +53,7 @@ def get_hamiltonian_cycles(graph):
             hamiltonian_cycles.append(permutation.copy())
 
     if not hamiltonian_cycles:
-         print(False)
+         print('False')
          return False
     else:
         print(hamiltonian_cycles)
@@ -73,5 +74,9 @@ def nodes_in_path_are_adjacent_including_edge_nodes(path, graph):
     
     return True
 
-def main(graph):
-    get_hamiltonian_cycles(graph)
+def main():
+    for i in range(len(graph_data.sjt_sample_graph_data)):
+        print('Graph at', i)
+        get_hamiltonian_cycles(graph_data.sjt_sample_graph_data[i])
+
+main()

@@ -26,7 +26,6 @@ class TestPathFinding(unittest.TestCase):
         actual = permutation.get_hamiltonian_cycles(graph)
         assert all(permutation in actual for permutation in expected), 'Does not return correct Hamiltonian cycles with larger graph'
 
-
     def test_get_hamiltonian_cycles_with_linear_graph(self):
         graph = [
             [(0, 0), [1]],          
@@ -38,7 +37,6 @@ class TestPathFinding(unittest.TestCase):
         expected = False
         actual = permutation.get_hamiltonian_cycles(graph)
         self.assertEqual(expected, actual, 'Does not return False for linear graph')
-
 
     def test_get_hamiltonian_cycles_with_three_nodes(self):
         graph = [

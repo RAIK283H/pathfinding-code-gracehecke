@@ -8,6 +8,35 @@ graph_data[a][b][1] = adjacency list of point b in graph a
 Only the start and exit nodes are dead ends (all other nodes have degree >= 2)
 '''
 
+sjt_sample_graph_data = [[
+     # has hamiltonian cycles
+        [(0, 0), [1, 9]],    
+        [(1, 0), [0, 8, 2, 9]], 
+        [(2, 0), [1, 3]],    
+        [(3, 0), [2, 4, 7]], 
+        [(4, 0), [3, 5]],    
+        [(5, 0), [4, 6]],    
+        [(6, 0), [5, 7]],    
+        [(7, 0), [3, 6, 8]], 
+        [(8, 0), [1, 7, 9]],    
+        [(9, 0), [0, 1, 8]]  
+    ],
+    # no cycles
+    [
+        [(0, 0), [1]],
+        [(200, -200), [0, 2]],
+        [(200, -400), [1]]
+    ],
+    # has hamiltonian cycles
+   [
+        [(0, 0), [1, 2, 4]],  
+        [(1, 0), [0, 2, 3, 4]], 
+        [(2, 0), [0, 1, 3]],  
+        [(3, 0), [1, 2, 4]], 
+        [(4, 0), [0, 1, 3]]   
+    ]
+    ]
+
 graph_data = [
 
     [
