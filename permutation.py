@@ -1,29 +1,21 @@
 
-graph = [
-        [(0, 0), [1]],
-        [(200, -200), [0, 2]],
-        [(200, -400), [1, 3]],
-        [(200, -400), [2, 4]],
-        [(200, -400), [3, 0]]
-]
-
 def get_permutations(graph):
     all_permutations = []
-    permutation = list(range(1, len(graph)))
-    all_permutations.append(permutation)
+    permutation = list(range(1, len(graph) - 1))
+    all_permutations.append(permutation.copy())
     directions = [-1] * (len(graph) - 1)
     largest_mobile = get_largest_mobile_integer(permutation, directions)
 
     while largest_mobile is not None:
         permutation = swap_largest_mobile_integer(permutation, directions, largest_mobile)
-        all_permutations.append(permutation)
+        all_permutations.append(permutation.copy())
         directions = switch_directions(permutation, directions, largest_mobile)
         largest_mobile = get_largest_mobile_integer(permutation, directions)
 
     return all_permutations
 
 def get_largest_mobile_integer(permutation, directions):
-    largest_mobile = None 
+    largest_mobile = None
 
     for i in range(len(permutation)):
         dir = directions[i]
@@ -40,7 +32,6 @@ def swap_largest_mobile_integer(permutation, directions, largest_mobile):
     dir = directions[index]
     swap_with = index + dir
 
-    # Swap the largest mobile integer with the adjacent element
     permutation[index], permutation[swap_with] = permutation[swap_with], permutation[index]
     directions[index], directions[swap_with] = directions[swap_with], directions[index]
 
@@ -52,7 +43,35 @@ def switch_directions(permutation, directions, largest_mobile):
             directions[i] *= -1
     return directions
 
-def main(graph):
-    get_permutations(graph)
+def get_hamiltonian_cycles(graph):
+    all_permutations = get_permutations(graph)
+    hamiltonian_cycles = []
 
-main(graph) 
+    for permutation in all_permutations:
+        if nodes_in_path_are_adjacent_including_edge_nodes(permutation, graph):
+            hamiltonian_cycles.append(permutation.copy())
+
+    if not hamiltonian_cycles:
+         print(False)
+         return False
+    else:
+        print(hamiltonian_cycles)
+        return hamiltonian_cycles
+
+def nodes_in_path_are_adjacent_including_edge_nodes(path, graph):
+    for i in range(len(path) - 1):
+        curr_node = path[i]
+        adjacent_nodes = graph[curr_node][1]
+        next_node = path[i + 1]
+        if next_node not in adjacent_nodes:
+            return False
+        
+    first_node = path[0]
+    last_node = path[-1]
+    if first_node not in graph[last_node][1]:
+        return False
+    
+    return True
+
+def main(graph):
+    get_hamiltonian_cycles(graph)

@@ -4,8 +4,228 @@ import pathing
 import global_game_data
 import graph_data
 import scoreboard
+import permutation
 
 class TestPathFinding(unittest.TestCase):
+
+    def test_get_hamiltonian_cycles_with_larger_graph(self):
+        graph = [
+            [(0, 0), []],           
+            [(1, 0), [2, 5]],             
+            [(2, 0), [1, 3]],            
+            [(3, 0), [2, 4, 7]],         
+            [(4, 0), [3, 5]],            
+            [(5, 0), [4, 6, 1]],             
+            [(6, 0), []]            
+        ]
+        expected = [[1, 2, 3, 4, 5], [5, 1, 2, 3, 4], [4, 5, 1, 2, 3], 
+                    [1, 5, 4, 3, 2], [3, 4, 5, 1, 2], [4, 3, 2, 1, 5], 
+                    [5, 4, 3, 2, 1], [3, 2, 1, 5, 4], [2, 3, 4, 5, 1], 
+                    [2, 1, 5, 4, 3]]
+
+        actual = permutation.get_hamiltonian_cycles(graph)
+        assert all(permutation in actual for permutation in expected), 'Does not return correct Hamiltonian cycles with larger graph'
+
+
+    def test_get_hamiltonian_cycles_with_linear_graph(self):
+        graph = [
+            [(0, 0), [1]],          
+            [(1, 0), [0, 2]],       
+            [(2, 0), [1, 3]],       
+            [(3, 0), [2, 4]],       
+            [(4, 0), [3]]           
+        ]
+        expected = False
+        actual = permutation.get_hamiltonian_cycles(graph)
+        self.assertEqual(expected, actual, 'Does not return False for linear graph')
+
+
+    def test_get_hamiltonian_cycles_with_three_nodes(self):
+        graph = [
+            [(0, 0), [1, 2]],     
+            [(1, 0), [0, 2]],        
+            [(2, 0), [0, 1]],   
+        ]
+        expected = False
+        actual = permutation.get_hamiltonian_cycles(graph)
+        self.assertEqual(expected, actual, 'Does not return False with three nodes')
+
+    def test_get_hamiltonian_cycles_with_basic_cycle(self):
+        graph = [
+            [(0, 0), [1, 4]],      
+            [(1, 0), [0, 2, 4, 3]],   
+            [(2, 0), [1, 3]],      
+            [(3, 0), [2, 4, 1]],     
+            [(4, 0), [0, 1, 3]]    
+        ]
+        expected = [[1, 2, 3], [1, 3, 2], [3, 1, 2], [3, 2, 1], [2, 3, 1], [2, 1, 3]]
+        actual = permutation.get_hamiltonian_cycles(graph)
+        self.assertEqual(expected, actual, 'Does not return correct hamiltonian for basic cycle')
+
+    def test_nodes_in_path_are_adjacent_including_edge_nodes_with_edge_nodes_in_center(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2, 4]],
+        [(0, 2), [1, 3]],
+        [(2, 1), [2, 4]],
+        [(2, 1), [3, 5, 1]],
+        [(3, 1), [4]]
+        ]
+        path =  [3, 4, 1, 2]
+        actual = permutation.nodes_in_path_are_adjacent_including_edge_nodes(path, graph)
+        self.assertTrue(actual, 'Does not return proper value with edge nodes in center of permutation')
+
+    def test_nodes_in_path_are_adjacent_including_edge_nodes_with_valid_path(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2, 3]],
+        [(0, 2), [1, 3]],
+        [(2, 1), [2, 4, 1]],
+        [(3, 1), [3]]
+        ]
+        path =  [1, 2, 3]
+        actual = permutation.nodes_in_path_are_adjacent_including_edge_nodes(path, graph)
+        self.assertTrue(actual, 'Does not return True with connected edge nodes')
+
+    def test_nodes_in_path_are_adjacent_including_edge_nodes_with_unconnected_edge_nodes(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2]],
+        [(0, 2), [1, 3]],
+        [(2, 1), [2, 4]],
+        [(3, 1), [3]]
+        ]
+        path =  [1, 2, 3]
+        actual = permutation.nodes_in_path_are_adjacent_including_edge_nodes(path, graph)
+        self.assertFalse(actual, 'Does not return False with unconnected edge nodes')
+
+    def test_nodes_in_path_are_adjacent_including_edge_nodes_with_invalid_path(self):
+        graph =     [
+        [(0, 0), [1]],
+        [(1, 1), [0, 2]],
+        [(0, 2), [1, 4]],
+        [(2, 1), [4]],
+        [(3, 1), [2, 3]]
+        ]
+        path =  [1, 2, 3]
+        actual = permutation.nodes_in_path_are_adjacent_including_edge_nodes(path, graph)
+        self.assertFalse(actual, 'Does not return False with invalid path')
+
+    def test_switch_directions_right_swap(self):
+        my_permutation = [1, 3, 2]
+        directions = [1, -1, 1]
+        largest_mobile = 3
+        expected = [1, -1, 1]
+        actual = permutation.switch_directions(my_permutation, directions, largest_mobile)
+        self.assertEqual(expected, actual, "Directions not properly changed with right swap")
+
+    def test_switch_directions_left_swap(self):
+        my_permutation = [1, 2, 3]
+        directions = [1, 1, -1]
+        largest_mobile = 3
+        expected = [1, 1, -1]
+        actual = permutation.switch_directions(my_permutation, directions, largest_mobile)
+        self.assertEqual(expected, actual, "Directions not properly changed with left swap")
+
+    def test_swap_largest_mobile_integer_with_right_swap(self):
+        my_permutation = [1, 3, 2]
+        directions = [1, -1, 1]
+        largest_mobile = 3
+        expected = [3, 1, 2]
+        actual = permutation.swap_largest_mobile_integer(my_permutation, directions, largest_mobile)
+        self.assertEqual(expected, actual, "Largest mobile integer not properly swapped right")
+
+    def test_swap_largest_mobile_integer_with_left_swap(self):
+        my_permutation = [1, 2, 3]
+        directions = [1, 1, -1]
+        largest_mobile = 3
+        expected = [1, 3, 2]
+        actual = permutation.swap_largest_mobile_integer(my_permutation, directions, largest_mobile)
+        self.assertEqual(expected, actual, "Largest mobile integer not properly swapped left")
+
+    def test_get_largest_mobile_integer_with_all_right_direction(self):
+        my_permutation = [1, 2, 3, 4]
+        directions = [-1, -1, -1, -1]
+        expected = 4
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Largest mobile integer not returned in last index")
+
+    def test_get_largest_mobile_integer_with_all_left_direction(self):
+        my_permutation = [4, 3, 2, 1]
+        directions = [1, 1, 1, 1]
+        expected = 4
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Largest mobile integer not returned in last index")
+
+    def test_get_largest_mobile_integer_with_large_permutation(self):
+        my_permutation = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+        directions = [-1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, -1, 1, 1, 1]
+        expected = 12
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Largest mobile integer not returned in last index")
+
+    def test_get_largest_mobile_integer_in_last_index(self):
+        my_permutation = [1, 2, 3]
+        directions = [1, 1, -1]
+        expected = 3
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Largest mobile integer not returned in last index")
+
+    def test_get_largest_mobile_integer_in_first_index(self):
+        my_permutation = [3, 2, 1]
+        directions = [1, 1, -1]
+        expected = 3
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Largest mobile integer not returned in first index")
+
+    def test_get_largest_mobile_integer_with_no_mobile_integer(self):
+        my_permutation = [2, 1, 3, 4]
+        directions = [-1, -1, 1, 1]
+        expected = None
+        actual = permutation.get_largest_mobile_integer(my_permutation, directions)
+        self.assertEqual(expected, actual, "Does not return None when no mobile integer left")
+
+    def test_get_permutations_with_2_node_graph(self):
+        graph =  [
+        [(0, 0), [1]],
+        [(200, -200), [0]]
+        ]
+        expected_permuations = [[]]
+        actual_permutations = permutation.get_permutations(graph)
+        self.assertEqual(expected_permuations, actual_permutations, "Incorrect permutations for 2 node graph")
+
+    def test_get_permutations_with_3_node_graph(self):
+        graph =  [
+        [(0, 0), [1]],
+        [(200, -200), [0, 2]],
+        [(200, -400), [1]]
+        ]
+        expected_permuations = [[1]]
+        actual_permutations = permutation.get_permutations(graph)
+        self.assertEqual(expected_permuations, actual_permutations, "Incorrect permutations for 3 node graph")
+
+    def test_get_permutations_with_4_node_graph(self):
+        graph =  [
+        [(0, 0), [1]],
+        [(200, -200), [0, 2]],
+        [(200, -400), [1, 3]],
+        [(200, -400), [2]]
+        ]
+        expected_permuations = [[1, 2], [2, 1]]
+        actual_permutations = permutation.get_permutations(graph)
+        self.assertEqual(expected_permuations, actual_permutations, "Incorrect permutations for 4 node graph")
+    
+    def test_get_permutations_with_5_node_graph(self):
+        graph =  [
+        [(0, 0), [1]],
+        [(200, -200), [0, 2]],
+        [(200, -400), [1, 3, 4]],
+        [(200, -400), [2, 4]],
+        [(200, -400), [2, 3]]
+        ]
+        expected_permuations = [[1, 2, 3], [1, 3, 2], [3, 1, 2], [3, 2, 1], [2, 3, 1], [2, 1, 3]]
+        actual_permutations = permutation.get_permutations(graph)
+        self.assertEqual(expected_permuations, actual_permutations, "Incorrect permutations for 5 node graph")
 
     def test_upper(self):
         self.assertEqual('test'.upper(), 'TEST')

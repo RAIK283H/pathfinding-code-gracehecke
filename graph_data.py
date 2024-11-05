@@ -8,7 +8,6 @@ graph_data[a][b][1] = adjacency list of point b in graph a
 Only the start and exit nodes are dead ends (all other nodes have degree >= 2)
 '''
 
-
 graph_data = [
 
     [
