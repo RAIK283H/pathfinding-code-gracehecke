@@ -2,6 +2,8 @@ import graph_data
 import global_game_data
 from numpy import random
 from collections import deque
+import queue
+import math
 
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
@@ -147,9 +149,44 @@ def get_bfs_path():
 
         return path
 
-
 def get_dijkstra_path():
-    return [1,2]
+    
+    start_node = 0
+
+    distances = [float('inf')] * len(graph_data.graph_data[global_game_data.current_graph_index])
+
+    visited = set()
+    visited.add(start_node)
+
+    parents = {}
+    parents[start_node] = None
+
+    q = queue.Queue()
+    q.put(start_node)
+    
+    while q.empty() is False:
+        current = q.get()
+        visited.add(current)
+
+        neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+
+        for neighbor in neighbors:
+            distance = distances[current] + calculate_distance_between_two_nodes(global_game_data.current_graph_index, current, neighbor)
+            if (neighbor not in visited) and (distance < distances[neighbor]):
+                distances[neighbor] = distance
+                parents[neighbor] = current
+                q.put(neighbor)
+
+    return parents
+                
+def calculate_distance_between_two_nodes(player_index, node_1, node_2):
+
+    current_node = graph_data.graph_data[player_index][node_1][0]
+    next_node = graph_data.graph_data[player_index][node_2][0]
+                                                                                            
+    distance = math.sqrt(math.pow(current_node[0] - next_node[0], 2) + math.pow(current_node[1] - next_node[1], 2))
+
+    return distance
 
 def nodes_in_path_are_adjacent(path, graph):
     for i in range(len(path) - 2):
