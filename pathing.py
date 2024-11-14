@@ -150,35 +150,60 @@ def get_bfs_path():
         return path
 
 def get_dijkstra_path():
-    
+    path = []
+    exit_node = len(graph_data.graph_data[global_game_data.current_graph_index]) - 1
+    target = global_game_data.target_node[global_game_data.current_graph_index]
     start_node = 0
+    checkpoint_nodes = [target, exit_node]
 
-    distances = [float('inf')] * len(graph_data.graph_data[global_game_data.current_graph_index])
+    for checkpoint_node in checkpoint_nodes:
 
-    visited = set()
-    visited.add(start_node)
+        q = queue.PriorityQueue()
+        q.put((0, start_node)) 
 
-    parents = {}
-    parents[start_node] = None
+        distances = [float('inf')] * len(graph_data.graph_data[global_game_data.current_graph_index])
+        distances[start_node] = 0  
 
-    q = queue.Queue()
-    q.put(start_node)
-    
-    while q.empty() is False:
-        current = q.get()
-        visited.add(current)
+        parents = {}
+        parents[start_node] = None
+        
+        visited = set()
 
-        neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+        while not q.empty():
+            current_distance, current = q.get()
 
-        for neighbor in neighbors:
-            distance = distances[current] + calculate_distance_between_two_nodes(global_game_data.current_graph_index, current, neighbor)
-            if (neighbor not in visited) and (distance < distances[neighbor]):
-                distances[neighbor] = distance
-                parents[neighbor] = current
-                q.put(neighbor)
+            if current not in visited:
+                visited.add(current)
 
-    return parents
-                
+                if current == checkpoint_node:
+                    break
+
+                neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
+                for neighbor in neighbors:
+                    distance = current_distance + calculate_distance_between_two_nodes(global_game_data.current_graph_index, current, neighbor)
+                    if distance < distances[neighbor]:
+                        distances[neighbor] = distance
+                        parents[neighbor] = current
+                        q.put((distance, neighbor))
+
+        current = checkpoint_node
+        run = []
+        while current is not None:
+            run.append(current)
+            current = parents.get(current)
+
+        run.pop()
+        path.extend(reversed(run))
+        start_node = target
+
+    # post conditions
+    assert nodes_in_path_are_adjacent(path, graph_data.graph_data[global_game_data.current_graph_index]), 'Not all sequential vertices in the path are connected by an edge'
+    assert path[0] in graph_data.graph_data[global_game_data.current_graph_index][0][1], 'Path does not begin at start'
+    assert target in path, 'Target never hit in path'
+    assert path[-1] == exit_node, 'Path does not end at exit node'
+
+    return path
+
 def calculate_distance_between_two_nodes(player_index, node_1, node_2):
 
     current_node = graph_data.graph_data[player_index][node_1][0]
@@ -197,7 +222,6 @@ def nodes_in_path_are_adjacent(path, graph):
             return False
     return True
 
-
 def is_valid_graph(graph):
     # graph is a list
     if not isinstance(graph, list):
@@ -215,5 +239,5 @@ def is_valid_graph(graph):
         # adjacency list is list of integers
         if not isinstance(node_data[1], list) or not all(isinstance(neighbor, int) for neighbor in node_data[1]):
             return False
-              
+                        
     return True
