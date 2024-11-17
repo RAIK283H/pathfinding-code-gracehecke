@@ -557,6 +557,140 @@ class TestPathFinding(unittest.TestCase):
         expected_distance =  50.9901951359
         self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with negative coordinates"
 
+    def test_calculate_distance_between_two_adjacent_nodes_with_start_node(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(20, 20), [1]],
+        [(50, 100), [0, 2]],
+        [(100, 300), [1]],
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(pathing.calculate_distance_between_two_adjacent_nodes(player_index, 0, 1), 10)
+        expected_distance =  85.4400374532
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with start node"
+
+    def test_calculate_distance_between_two_adjacent_nodes_with_end_node(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(20, 20), [1]],
+        [(50, 100), [0, 2]],
+        [(100, 300), [1]],
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(pathing.calculate_distance_between_two_adjacent_nodes(player_index, 1, 2), 10)
+        expected_distance =  206.1552812809
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with end node"
+    
+    def test_calculate_distance_between_two_adjacent_nodes_with_small_distance(self):
+        player_index = 0
+        graph_data.graph_data = [[
+        [(20, 20), [1]],
+        [(1, 1), [0, 2]],
+        [(1.0001, 1), [1, 3]],
+        [(50, 100), [2]]
+        ]]
+        global_game_data.graph_paths = [[0, 1]]
+        actual_distance = round(pathing.calculate_distance_between_two_adjacent_nodes(player_index, 1, 2), 10)
+        expected_distance =  0.0001
+        self.assertEqual(actual_distance, expected_distance), "Node distance not properly calculated with extremely small distance"
+
+    def test_get_dijkstra_path_with_linear_path(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_dijkstra_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path), "Incorrect dijkstra output with linear path"
+
+    def test_dijkstra_with_cycle(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1]],
+            [(50, -200), [0, 2]],
+            [(50, -300), [1, 3]],
+            [(200, -500), [2, 0]]
+        ]]
+        global_game_data.target_node = [1]
+        actual_path = pathing.get_dijkstra_path()
+        expected_path = [1, 2, 3]
+        self.assertEqual(actual_path, expected_path, "Incorrect dijkstra output with cyclical path")
+
+    def test_dijkstra_with_multiple_branches(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1, 2]],     
+            [(50, -200), [0, 3, 4]],
+            [(50, -300), [0, 5, 6]], 
+            [(200, -400), [1]],   
+            [(250, -400), [1, 7]],  
+            [(300, -400), [2]],   
+            [(350, -400), [2, 7]],   
+            [(400, -500), [4, 6]]     
+        ]]
+        global_game_data.target_node = [3]  
+        actual_path = pathing.get_dijkstra_path()
+        expected_path = [1, 3, 1, 4, 7]
+        self.assertEqual(actual_path, expected_path, "Dijkstra failed with a path containing multiple branches")
+
+    def test_get_dijkstra_path_with_large_graph(self):
+        graph_data.graph_data =  [[
+            [(900, 0), [21, 22]],
+            [(0, 300), [7, 19, 20]],
+            [(100, 400), [9, 10, 20]],
+            [(200, 0), [6, 8, 11, 22]],
+            [(200, 200), [6, 7, 11, 12]],
+            [(200, 500), [10, 21]],
+            [(300, 100), [3, 4, 11, 20]],
+            [(300, 300), [1, 4, 9, 12, 20]],
+            [(400, 0), [3, 11, 22]],
+            [(400, 300), [2, 7, 12, 13, 15]],
+            [(400, 500), [2, 5, 13, 14, 15]],
+            [(400, 100), [3, 4, 6, 8, 12, 16, 17]],
+            [(400, 300), [4, 7, 9, 11, 15, 17]],
+            [(400, 400), [9, 10, 15]],
+            [(500, 500), [10, 18, 15]],
+            [(600, 400), [9, 10, 12, 13, 14]],
+            [(600, 0), [11, 17]],
+            [(600, 200), [11, 12, 16, 18]],
+            [(700, 400), [14, 17]],
+            [(0, 500), [1, 8, 21]],
+            [(0, 200), [1, 2, 6, 7, 22]],
+            [(400, 700), [5, 19, 0]],
+            [(0, 0), [0, 3, 20]]
+        ]]
+        global_game_data.target_node= [1]
+        actual_path = pathing.get_dijkstra_path()
+        expected_path = [22, 20, 1, 20, 22]
+        self.assertEqual(actual_path, expected_path), "Incorrect dijkstra output with large graph"
+
+    def test_get_dijkstra_path_when_target_is_end_node(self):
+        graph_data.graph_data = [[
+        [(0, 0), [1]],
+        [(50, -200), [0, 2]],
+        [(50, -300), [1, 3]],
+        [(200, -500), [2, 4]],
+        [(200, 500), [3]]
+        ]]
+        global_game_data.target_node= [4]
+        actual_path = pathing.get_dijkstra_path()
+        expected_path = [1, 2, 3, 4]
+        self.assertEqual(actual_path, expected_path), "Incorrect dijkstra output with target as last node"
+    
+
+    def test_get_dijkstra_path_with_equidistant_shortest_paths(self):
+        graph_data.graph_data = [[
+            [(0, 0), [1, 2]],
+            [(50, -200), [0, 3]],
+            [(50, -300), [0, 3]],
+            [(100, -400), [1, 2]]
+        ]]
+        global_game_data.target_node= [3]
+        actual_path = pathing.get_dijkstra_path()
+        expected_paths = [[1, 2], [1,3]]
+        self.assertIn(actual_path, expected_paths), "Incorrect dijkstra output with equidistant shortest paths"
+
 
 if __name__ == '__main__':
     unittest.main()

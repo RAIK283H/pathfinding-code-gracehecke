@@ -180,7 +180,7 @@ def get_dijkstra_path():
 
                 neighbors = graph_data.graph_data[global_game_data.current_graph_index][current][1]
                 for neighbor in neighbors:
-                    distance = current_distance + calculate_distance_between_two_nodes(global_game_data.current_graph_index, current, neighbor)
+                    distance = current_distance + calculate_distance_between_two_adjacent_nodes(global_game_data.current_graph_index, current, neighbor)
                     if distance < distances[neighbor]:
                         distances[neighbor] = distance
                         parents[neighbor] = current
@@ -204,7 +204,7 @@ def get_dijkstra_path():
 
     return path
 
-def calculate_distance_between_two_nodes(player_index, node_1, node_2):
+def calculate_distance_between_two_adjacent_nodes(player_index, node_1, node_2):
 
     current_node = graph_data.graph_data[player_index][node_1][0]
     next_node = graph_data.graph_data[player_index][node_2][0]
