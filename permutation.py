@@ -75,8 +75,8 @@ def nodes_in_path_are_adjacent_including_edge_nodes(path, graph):
     return True
 
 def main():
-    for i in range(len(graph_data.sjt_sample_graph_data)):
+    for i in range(len(graph_data.sample_graph_data)):
         print('Graph at', i)
-        get_hamiltonian_cycles(graph_data.sjt_sample_graph_data[i])
+        get_hamiltonian_cycles(graph_data.sample_graph_data[i])
 
 main()

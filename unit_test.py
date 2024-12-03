@@ -691,6 +691,5 @@ class TestPathFinding(unittest.TestCase):
         expected_paths = [[1, 2], [1,3]]
         self.assertIn(actual_path, expected_paths), "Incorrect dijkstra output with equidistant shortest paths"
 
-
 if __name__ == '__main__':
     unittest.main()

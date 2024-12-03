@@ -4,13 +4,15 @@ from numpy import random
 from collections import deque
 import queue
 import math
+import f_w
 
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
     global_game_data.graph_paths.append(get_test_path())
     global_game_data.graph_paths.append(get_random_path())
     global_game_data.graph_paths.append(get_dfs_path())
-    global_game_data.graph_paths.append(get_bfs_path())
+    #global_game_data.graph_paths.append(get_bfs_path())
+    global_game_data.graph_paths.append(f_w.get_f_w_path())
     global_game_data.graph_paths.append(get_dijkstra_path())
 
 
@@ -205,10 +207,9 @@ def get_dijkstra_path():
     return path
 
 def calculate_distance_between_two_adjacent_nodes(player_index, node_1, node_2):
-
     current_node = graph_data.graph_data[player_index][node_1][0]
     next_node = graph_data.graph_data[player_index][node_2][0]
-                                                                                            
+                                                                                   
     distance = math.sqrt(math.pow(current_node[0] - next_node[0], 2) + math.pow(current_node[1] - next_node[1], 2))
 
     return distance
