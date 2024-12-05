@@ -66,7 +66,7 @@ def nodes_in_path_are_adjacent_including_edge_nodes(path, graph):
         next_node = path[i + 1]
         if next_node not in adjacent_nodes:
             return False
-        
+
     first_node = path[0]
     last_node = path[-1]
     if first_node not in graph[last_node][1]:
