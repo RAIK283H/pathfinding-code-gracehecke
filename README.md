@@ -4,4 +4,6 @@ The get_random_path function finds a list of adjacent nodes of the curr_node (be
 
 The added statistic represents the number of times a node is visited during a player's graph traversal, after the start node. When a player reaches a node, the value is incremented. If the same node is hit repeatedly, the value is still incremented on each pass through.
 
+FLOYD-WARSHALL EC:
 
+The former BFS player now displays a Floyd-Warshall player with the appropriate path.

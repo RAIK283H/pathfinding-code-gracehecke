@@ -20,7 +20,7 @@ def get_f_w(graph):
     weights = [[float('inf')] * matrix_size for _ in range(matrix_size)]
     parents = [[None] * matrix_size for _ in range(matrix_size)]
 
-    # create weights matrix
+    # get weights matrix
     for node in range(matrix_size):
         weights[node][node] = 0
         for neighbor in graph[node][1]:
